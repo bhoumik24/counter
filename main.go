@@ -23,57 +23,10 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 	const (
 		sessionKey = "counter"
 		countKey   = "count"
-		theme      = "theme"
 	)
-	GetTheme := func(r *http.Request) (bool, *sessions.Session, error) {
-		session, err := sessionStore.Get(r, sessionKey)
-		if err != nil {
-			return false, nil, err
-		}
-
-		isDark, ok := session.Values[theme].(bool)
-		if !ok {
-			isDark = false
-		}
-
-		return isDark, session, nil
-	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		isDark, _, err := GetTheme(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		theme := "cupcake"
-		if isDark {
-			theme = "forest"
-		}
-
-		store := ThemeSignal{
-			Theme: theme,
-		}
-		CounterInitial(store).Render(r.Context(), w)
-	})
-
-	router.Post("/counter/theme", func(w http.ResponseWriter, r *http.Request) {
-		isDark, sess, err := GetTheme(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		sess.Values[theme] = !isDark
-		if err := sess.Save(r, w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		update := gabs.New()
-		if isDark {
-			update.Set("cupcake", "theme")
-		} else {
-			update.Set("forest", "theme")
-		}
-		datastar.NewSSE(w, r).MarshalAndMergeSignals(update)
+		CounterInitial().Render(r.Context(), w)
 	})
 
 	var globalCounter atomic.Uint32
