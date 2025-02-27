@@ -1,0 +1,34 @@
+# Binaries
+/counter
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go specific
+*.test
+*.out
+go.work
+
+# Node.js
+node_modules/**
+/npm-debug.log
+/yarn-debug.log
+/yarn-error.log
+bun.lock
+
+# Tailwind CSS
+/static/output.css
+
+# Templ files
+*_templ.go
+
+# macOS
+.DS_Store
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
