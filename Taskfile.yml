@@ -15,7 +15,7 @@ tasks:
 
   build:
     cmds:
-      - go build -o counter *.go
+      - go build -o counter .
     deps:
       - build:styles
       - build:templ
