@@ -1,0 +1,36 @@
+# flyctl launch added from .gitignore
+# Binaries
+counter
+**/*.exe
+**/*.exe~
+**/*.dll
+**/*.so
+**/*.dylib
+
+# Go specific
+**/*.test
+**/*.out
+**/go.work
+
+# Node.js
+**/node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+**/bun.lock
+**/pnpm-lock.yaml
+
+# Tailwind CSS
+# static/output.css
+
+
+# macOS
+**/.DS_Store
+
+# Editor directories and files
+**/.idea
+**/.vscode
+**/*.swp
+**/*.swo
+fly.toml

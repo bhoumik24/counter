@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/a-h/templ v0.3.833
+	github.com/benbjohnson/hashfs v0.2.2
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/gorilla/sessions v1.4.0
 	github.com/starfederation/datastar v1.0.0-beta.8

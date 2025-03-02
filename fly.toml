@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for counter-misty-dawn-7696 on 2025-03-01T17:06:14-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'counter-misty-dawn-7696'
+primary_region = 'ewr'
+
+[build]
+
+[env]
+  PORT = '8080'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'

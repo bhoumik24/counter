@@ -1,9 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;700&display=swap");
-@import "tailwindcss" source("*.{go, js, templ, html}");
+@import "tailwindcss" source(none);
+@source "./*.{go,templ,html,js}";
 @plugin "daisyui" {
-  themes:
-    cupcake --default,
-    forest --prefersdark;
+  include: button, label, swap;
 }
 
 @theme {

@@ -11,7 +11,7 @@ tasks:
 
   build:styles:
     cmds:
-      - tailwindcss -i input.css -o $STATIC_DIR/output.css
+      - tailwindcss -i input.css -o $STATIC_DIR/output.css --minify
 
   build:
     cmds:

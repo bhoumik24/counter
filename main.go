@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,12 +14,17 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
+	hashfs "github.com/benbjohnson/hashfs"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gorilla/sessions"
 	datastar "github.com/starfederation/datastar/sdk/go"
 	"golang.org/x/sync/errgroup"
 )
+
+//go:embed static
+var staticFS embed.FS
+var staticRootFS, _ = fs.Sub(staticFS, "static")
 
 func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 	const (
@@ -27,6 +34,34 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		CounterInitial().Render(r.Context(), w)
+	})
+
+	router.Post("/counter/set-theme", func(w http.ResponseWriter, r *http.Request) {
+		store := &ThemeSignal{}
+		if err := datastar.ReadSignals(r, store); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+		update := gabs.New()
+		if store.IsDark && store.Theme != "light" {
+			update.Set("dark", "theme")
+		} else {
+			update.Set("light", "theme")
+		}
+		datastar.NewSSE(w, r).MarshalAndMergeSignals(update)
+	})
+
+	router.Post("/counter/toggle-theme", func(w http.ResponseWriter, r *http.Request) {
+		store := &ThemeSignal{}
+		if err := datastar.ReadSignals(r, store); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+		update := gabs.New()
+		if store.Theme == "dark" {
+			update.Set("light", "theme")
+		} else {
+			update.Set("dark", "theme")
+		}
+		datastar.NewSSE(w, r).MarshalAndMergeSignals(update)
 	})
 
 	var globalCounter atomic.Uint32
@@ -136,14 +171,16 @@ func startServer(ctx context.Context, port string) func() error {
 			middleware.Recoverer,
 		)
 
-		router.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+		router.Handle("/static/*", http.StripPrefix("/static/", hashfs.FileServer(staticRootFS)))
 
 		sessionStore := sessions.NewCookieStore([]byte("session-secret"))
-		sessionStore.Options = &sessions.Options{
-			Domain:   "localhost",
-			MaxAge:   int(24 * time.Hour / time.Second),
-			SameSite: http.SameSiteLaxMode,
-		}
+		// sessionStore.Options = &sessions.Options{
+		// 	Path:     "/",
+		// 	MaxAge:   int(24 * time.Hour / time.Second),
+		// 	SameSite: http.SameSiteLaxMode,
+		// }
+
+		sessionStore.MaxAge(int(24 * time.Hour / time.Second))
 
 		if err := setupCounterRoute(router, sessionStore); err != nil {
 			return fmt.Errorf("error setting up routes: %w", err)
