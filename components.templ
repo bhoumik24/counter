@@ -64,8 +64,9 @@ templ Counter(signals CounterSignals) {
 
 templ CounterInitial() {
 <!DOCTYPE html>
-<html lang="en" data-bind-theme data-computed-is_dark="window.matchMedia('(prefers-color-scheme: dark)').matches"
-  data-on-load={ datastar.PostSSE("/counter/set-theme") } data-persist="theme" data-attr-data-theme="$theme">
+<html lang="en" data-signals-theme data-persist="theme"
+  data-computed-is_dark="window.matchMedia('(prefers-color-scheme: dark)').matches" data-on-load={
+  datastar.PostSSE("/counter/set-theme") } data-attr-data-theme="$theme">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />

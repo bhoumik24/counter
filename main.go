@@ -42,7 +42,10 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		update := gabs.New()
-		if store.IsDark && store.Theme != "light" {
+		// If theme is already set, respect it
+		if store.Theme != "" {
+			update.Set(store.Theme, "theme")
+		} else if store.IsDark {
 			update.Set("dark", "theme")
 		} else {
 			update.Set("light", "theme")
