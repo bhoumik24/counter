@@ -33,7 +33,9 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 	)
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		CounterInitial().Render(r.Context(), w)
+		if err := CounterInitial().Render(r.Context(), w); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 	})
 
 	router.Post("/counter/set-theme", func(w http.ResponseWriter, r *http.Request) {
