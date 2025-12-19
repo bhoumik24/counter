@@ -1,9 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;700&display=swap");
-@import "tailwindcss" source(none);
-@source "./*.{go,templ,html,js}";
-@plugin "daisyui" {
-  include: button, label, swap;
-}
+@import "tailwindcss";
+
+@source not "./tailwindcss";
+@source not "./daisyui{,*}.mjs";
+
+@plugin "./daisyui.mjs";
 
 @theme {
   --font-roboto: "M PLUS Rounded 1c", sans-serif;

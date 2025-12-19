@@ -7,11 +7,11 @@ tasks:
   # The `build:` tasks below are used together for "production" builds of your project
   build:templ:
     cmds:
-      - templ generate -v
+      - go tool templ generate -v
 
   build:styles:
     cmds:
-      - tailwindcss -i input.css -o $STATIC_DIR/output.css --minify
+      - go tool gotailwind -i input.css -o $STATIC_DIR/output.css --minify
 
   build:
     cmds:
@@ -23,18 +23,18 @@ tasks:
   # Use this task to debug your project with the delve debugger
   debug:
     cmds:
-      - go run github.com/go-delve/delve/cmd/dlv@v1.23.1 exec ./counter
+      - go tool dlv exec ./counter
     deps:
       - build
 
   # The `live:` tasks below are used together for "dev" builds, and will hot-reload your entire project when there are code changes
   live:templ:
     cmds:
-      - templ generate --watch --proxy="http://localhost:8080" --proxybind="localhost" --cmd="go run ."
+      - go tool templ generate --watch --proxy="http://localhost:8080" --proxybind="localhost" --cmd="go run ."
 
   live:styles:
     cmds:
-      - tailwindcss -i input.css -o $STATIC_DIR/output.css --watch
+      - go tool gotailwind -i input.css -o $STATIC_DIR/output.css --watch
 
   live:
     deps:
